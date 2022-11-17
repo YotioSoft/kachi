@@ -15,13 +15,6 @@ impl Target {
             commands: Vec::new(),
         }
     }
-    pub fn clone(&self) -> Target {
-        Target {
-            target_name: self.target_name.clone(),
-            files: self.files.clone(),
-            commands: self.commands.clone(),
-        }
-    }
 }
 
 pub fn analyze(filepath: String) -> Result<Vec<Target>, Box<dyn Error>> {
@@ -30,25 +23,26 @@ pub fn analyze(filepath: String) -> Result<Vec<Target>, Box<dyn Error>> {
     file.read_to_string(&mut contents)?;
     
     let mut targets = Vec::new();
-    for line in contents.lines() {
-        match line {
-            line if line.contains(":") => {
+    {
+        for line in contents.lines() {
+            if line.contains(":") {
                 let mut split = line.split(":");
                 let mut target = Target::default();
                 target.target_name = split.next().unwrap().to_string();
                 target.files = split.next().unwrap().split_whitespace().map(|s| s.to_string()).collect();
                 targets.push(target);
-            },
-            line if line.contains('\t') || line.contains("    ") => {
-                let mut split = line.split("\t");
+            }
+            if line.contains('\t') || line.contains("    ") {
+                let mut split = if line.contains('\t') {
+                    line.split("\t")
+                } else {
+                    line.split("    ")
+                };
                 split.next();
-                let mut commands = split.next().unwrap().split_whitespace().map(|s| s.to_string()).collect();
-                targets.last_mut().unwrap().commands.append(&mut commands);
+                let command = split.next().unwrap().to_string();
+                targets.last_mut().unwrap().commands.push(command);
                 
-            },
-            _ => {
-                println!("Invalid line: {}", line);
-            },
+            }
         }
     }
 
