@@ -1,4 +1,4 @@
-hello: hello.c
+hello: hello.c hello2.c
     gcc -Wall -O2 -o hello hello.c
 
 hello2: hello.c main.c
