@@ -17,12 +17,12 @@ fn get_file_metadata(filepaths: Vec<String>) -> Result<Vec<file_profile::FileMet
 }
 
 pub fn run(target: analyzer::Target) {
-    let metadata = get_file_metadata(target.files);
-    if let Ok(metadata) = metadata {
-        for file in metadata.clone() {
+    let file_metadata = get_file_metadata(target.files);
+    if let Ok(file_metadata) = file_metadata {
+        for file in file_metadata.clone() {
             println!("File modified: {}", file_profile::to_datetime(file.metadata));
         }
 
-        file_profile::add("workdir".to_string(), metadata);
+        file_profile::add("workdir".to_string(), file_metadata).expect("Failed to add file profile");
     }
 }

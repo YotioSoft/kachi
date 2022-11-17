@@ -36,7 +36,7 @@ struct FileProfiles {
 }
 impl Default for FileProfiles {
     fn default() -> Self {
-        FileProfiles {
+        Self {
             profiles: Vec::new(),
         }
     }
@@ -48,21 +48,21 @@ pub fn to_datetime(metadata: Metadata) -> chrono::DateTime<chrono::Local> {
 }
 
 pub fn add(workdir: String, file_modify: Vec<FileMetadata>) -> Result<(), ConfyError> {
-    let mut file_profile = confy::load::<FileProfiles>("kachi", "file_profile");
-    if let Ok(file_profile) = &mut file_profile {
-        let profiles = file_modify.into_iter().map(|file_meta_data| {
-            FileModify {
-                filepath: file_meta_data.filepath,
-                modify: to_datetime(file_meta_data.metadata).to_string(),
-            }
-        }).collect();
+    let mut file_profile = confy::load::<FileProfiles>("kachi", "file_profile")?;
+    let profiles: Vec<FileModify> = file_modify.into_iter().map(|file_meta_data| {
+        FileModify {
+            filepath: file_meta_data.filepath,
+            modify: to_datetime(file_meta_data.metadata).to_string(),
+        }
+    }).collect();
+    println!("{:?}", profiles[0].filepath);
 
-        file_profile.profiles.push(FileProfile {
-            workdir: workdir,
-            files: profiles,
-        });
+    file_profile.profiles.push(FileProfile {
+        workdir: workdir,
+        files: profiles,
+    });
+    println!("{:?}", file_profile.profiles[0].files[0].modify);
 
-        confy::store("kachi", "file_profile", file_profile)?;
-    }
+    confy::store("kachi", "file_profile", file_profile)?;
     Ok(())
 }
