@@ -1,11 +1,7 @@
-mod analyzer;
+mod run;
 
 fn main() {
-    let targets = analyzer::analyze("kachifile".to_string()).expect("Failed to analyze file");
+    let targets = run::analyzer::analyze("kachifile".to_string()).expect("Failed to analyze file");
 
-    for target in targets {
-        println!("Target: {}", target.target_name);
-        println!("Files: {:?}", target.files);
-        println!("Commands: {:?}", target.commands);
-    }
+    run::run(targets);
 }

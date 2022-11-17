@@ -1,1 +1,4 @@
 /target
+make.log
+hello.exe
+makefile
