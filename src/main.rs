@@ -12,7 +12,7 @@ fn main() {
             if entry.file_type().is_ok() {
                 let filepath = entry.path().to_str().unwrap().to_string();
                 println!("kachifile: {}", filepath);
-                let targets = run::analyzer::analyze(filepath).unwrap();
+                let targets = run::analyze(filepath).unwrap();
                 let target_name = "hello".to_string();
                 let target = targets.into_iter().find(|t| t.target_name == target_name).expect("Failed to find target");
                 run::run(target);
